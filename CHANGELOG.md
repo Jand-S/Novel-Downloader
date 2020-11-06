@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <hr>
 
+## [v0.3] - 06-12-2020
+
+### Added
+
+- Mensagem de novas atualizações.
+- CHANGELOG.
+
+### Changed
+- Fixed typos in Italian translation from [@lorenzo-arena](https://github.com/lorenzo-arena).
+- Fixed typos in Indonesian translation from [@ekojs](https://github.com/ekojs).
+
+<hr>
+
 ## [v0.2] - 06-11-2020
 
 ### Added
