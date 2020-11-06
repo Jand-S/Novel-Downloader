@@ -1,6 +1,6 @@
 # Novel-Downloader
 <hr>
-# V0.2
+V0.2
 <hr>
 <h3>Features</h3>
 <ul>
