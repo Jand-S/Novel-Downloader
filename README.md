@@ -1,5 +1,4 @@
 # Novel-Downloader
-<hr>
 <h1>V0.2</h1>
 <hr>
 <h3>Features</h3>
