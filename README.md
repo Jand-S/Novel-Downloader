@@ -16,5 +16,5 @@
 <li><a href= "https://novelmania.com.br/">novelmania.com.br</a></li>
 </ul>
 <h3>Download</h3>
-<li>https://drive.google.com/file/d/1LpioVzZOHQdSI7zxJanJzaXZOFWwgjvi/view</li>
+<li>https://www.autoitscript.com/forum/topic/127101-udf-mssqlau3/</li>
 
