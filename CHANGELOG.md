@@ -7,16 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <hr>
 
-## [v0.3] - 06-11-2020
-
-### Added
-
-- Mensagem de novas atualizações.
-- CHANGELOG.
-- teste
-
-<hr>
-
 ## [v0.2] - 14-11-2020
 
 ### Added
