@@ -1,3 +1,5 @@
+Global $version = 0.2
+
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
 #include <GUIConstantsEx.au3>
@@ -19,38 +21,53 @@
 Global $iProgress = 0
 Global $header = 1
 Global $button_enabled = 1 ;OpenButton
+Global $button_enabledDown = 1 ;Downbutton
 Global $aValues[1]
 Global $ListCheckRepeat = 2
 Global $SiteNovel
 Global $arrayreset = 0
 Global $aValues
 
+Global $bInterrupt = False
+Global $globalfr = 0
+Global $K = 0
+Global $asKeyWords[10000]
+Global $same = 1
+
+
+
 ;//Set Theme
 _SetTheme("DarkTeal")
 ;//Form
-$n_manager = _Metro_CreateGUI("Novel Manager", 878, 455, -1, -1, False)
+Global $n_manager = _Metro_CreateGUI("Novel Manager", 878, 455, -1, -1, False)
 $Control_Buttons = _Metro_AddControlButtons(True,False,True)
 $GUI_CLOSE_BUTTON = $Control_Buttons[0]
 $GUI_MINIMIZE_BUTTON = $Control_Buttons[3]
 ;//Picture
+Global $delete_button = _Metro_CreateButtonEx("X", 9, 405, 20, 20, $ButtonBKColorCancel)
+GUICtrlSetState(-1, $GUI_HIDE)
 $frame_pic = GUICtrlCreateGroup("", 9,116, 215, 310)
 Global $novel_pic = GUICtrlCreatePic("", 9,122, 213, 302)
+Global $novel_picx = GUICtrlCreatePic("", 9,405, 20, 20)
 ;//Buttons
-$conf_button = _Metro_CreateButtonEx2("Configurações", 400, 34, 153, 33)
-$cancel_button = _Metro_CreateButtonEx2("Cancelar", 560, 34, 153, 33)
+$conf_button = _Metro_CreateButtonEx2("Configurações", 400, 34, 153, 40)
+Global $cancel_button = _Metro_CreateButtonEx2("Cancelar", 560, 34, 153, 40, $ButtonBKColorCancel)
 GUICtrlSetState(-1, $GUI_DISABLE)
-$down_button = _Metro_CreateButtonEx2("Download", 718, 34, 153, 33)
+Global $down_button = _Metro_CreateButtonEx2("Download", 718, 34, 153, 40)
 $open_button = _Metro_CreateButtonEx2("Abrir", 312, 34, 81, 33)
-$put_button = _Metro_CreateButtonEx2(">", 360, 78, 33, 33)
-$output_button = _Metro_CreateButtonEx2("<", 6, 78, 33, 33)
+$put_button = _Metro_CreateButtonEx2(">", 353, 78, 40, 40)
+$output_button = _Metro_CreateButtonEx2("<", 6, 78, 40, 40)
+
+;
 ;//Labels
-Global $novel_tittle = GUICtrlCreateLabel("", 40, 84, 320, 24, $SS_CENTER)
+Global $novel_tittle = GUICtrlCreateLabel("", 47, 90, 306, 24, $SS_CENTER);mudei de 24 pra 30
+
 Global $label_status = GUICtrlCreateLabel("", 8, 428, 180, 22)
 $credit_l = GUICtrlCreateLabel("github.com/Jason509", 720, 428, 180, 22)
-$p_name = GUICtrlCreateLabel("Novel Downloader", 8, 10, 180, 22)
+$p_name = GUICtrlCreateLabel("Novel Downloader v0.2", 8, 10, 180, 22)
 ;//InputBox
 Global $input_link = GUICtrlCreateInput("", 8, 39, 297, 24)
-$input_search = GUICtrlCreateInput("", 232, 121, 161, 24)
+Global $input_search = GUICtrlCreateInput("", 232, 121, 161, 24)
 ;//ListViews
 $frame_list = GUICtrlCreateGroup("", 232,146, 161, 280)
 Global $listview_chap = GUICtrlCreateListView("Chapters|", 233, 153, 159, 271)
@@ -58,6 +75,7 @@ $listview_status = GUICtrlCreateListView("Novel| Cápitulo| Status| Progresso", 
 ;//Fundo Transparente
 _GUICtrlListView_SetExtendedListViewStyle($listview_chap, $LVS_EX_TRANSPARENTBKGND)
 _GUICtrlListView_SetExtendedListViewStyle($listview_status, $LVS_EX_TRANSPARENTBKGND)
+
 ;//Estilos do $listview_chap
 GUICtrlSetStyle($listview_chap, $LVS_NOCOLUMNHEADER + $LVS_SHOWSELALWAYS + $LVS_REPORT, $LVS_EX_FULLROWSELECT)
 GUICtrlSendMsg($listview_status, $LVM_SETCOLUMNWIDTH, 0, 120)
@@ -68,6 +86,7 @@ GUICtrlSendMsg($listview_chap, $LVM_SETCOLUMNWIDTH, 0, 130)
 ;//Texto Transparente
 _GUICtrlEdit_SetCueBanner($input_link, "Link da Novel", True)
 _GUICtrlEdit_SetCueBanner($input_search, "Procurar Capítulo", True)
+;GUICtrlSetBkColor($novel_tittle, 0xFFFFFF)
 ;//Formatações de texto
 _fontcolor ($credit_l, 12, 0xFFFFFF)
 _fontcolor ($input_link, 10)
@@ -88,15 +107,22 @@ GUISetState(@SW_SHOW)
 GUIRegisterMsg($WM_NCHITTEST, "_MY_NCHITTEST")
 GUIRegisterMsg($WM_GETMINMAXINFO, "WM_GETMINMAXINFO")
 GUIRegisterMsg($WM_COMMAND, "WM_COMMAND")
+GUIRegisterMsg($WM_COMMAND, "_WM_STOPLOOP")
+GUIRegisterMsg($WM_COMMAND, "WM_COMMANDINPUTSEARCH")
 
 ;CheckDirectories
 _DirFileCheck (@scriptdir & "\Downloads")
 _DirFileCheck (@ScriptDir & "\Configs")
 
+checkupdate ()
+
 
 While 1
    $nMsg = GUIGetMsg()
    Check_Input ()
+   Check_Downbutton ()
+   _checkputout ()
+   CheckInputSearch ()
    Switch $nMsg
 	  Case $GUI_EVENT_CLOSE, $GUI_CLOSE_BUTTON
 		 _Metro_GUIDelete($n_manager)
@@ -109,6 +135,37 @@ While 1
 		 _DownNovel ()
 	  Case $open_button
 		 _OpenButton ()
+		 GUICtrlSetState($delete_button, $GUI_SHOW)
+	  Case $put_button
+		 If $fileinisavechap <> False Then
+			;MsgBox ("","",">")
+			$foward = _fowardNovel ()
+			If  $foward = True Then
+			   _GUICtrlListView_DeleteAllItems ($listview_chap)
+			   GUICtrlSetData($label_status, "Carregando...")
+			   putbuttonskip ()
+			   GUICtrlSetState($delete_button, $GUI_SHOW)
+			   _ArrayClear ()
+			   $chapters = _GUICtrlListView_GetItemCount ( $listview_chap )
+			   GUICtrlSetData($label_status, "Mostrando "&$chapters& " capítulos")
+			EndIf
+		 EndIf
+	  Case $output_button
+		 If $fileinisavechap <> False Then
+			;MsgBox ("","","<")
+			$backward = _backfowardNovel ()
+			If $backward = True Then
+			   _GUICtrlListView_DeleteAllItems ($listview_chap)
+			   GUICtrlSetData($label_status, "Carregando...")
+			   putbuttonskip ()
+			   GUICtrlSetState($delete_button, $GUI_SHOW)
+			   _ArrayClear ()
+			   $chapters = _GUICtrlListView_GetItemCount ( $listview_chap )
+			   GUICtrlSetData($label_status, "Mostrando "&$chapters& " capítulos")
+			EndIf
+		 EndIf
+	  Case $delete_button
+		 _DeleteButtonchap ()
    EndSwitch
 WEnd
 
@@ -194,4 +251,3 @@ Func _ConfigGUI()
 	  EndSwitch
    WEnd
 EndFunc
-

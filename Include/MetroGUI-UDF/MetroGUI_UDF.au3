@@ -136,7 +136,7 @@ Func _Metro_CreateGUI($Title, $Width, $Height, $Left = -1, $Top = -1, $AllowResi
 	_WinAPI_SetWindowSubclass($GUI_Return, $m_pDll, 1010, $gID)
 	WinMove($GUI_Return, "", Default, Default, $Width, $Height)
 
-	
+
 	If Not $ParentGUI Then
 		Local $Center_GUI = _GetDesktopWorkArea($GUI_Return)
 		If ($Left = -1) And ($Top = -1) Then
@@ -150,7 +150,7 @@ Func _Metro_CreateGUI($Title, $Width, $Height, $Left = -1, $Top = -1, $AllowResi
 	EndIf
 
 	GUISetBkColor($GUIThemeColor)
-	
+
 	_CreateBorder($GUI_Return, $Width, $Height, $GUIBorderColor)
 
 	Return ($GUI_Return)
@@ -182,11 +182,11 @@ Func _Metro_SetGUIOption($mGUI, $AllowDragMove = False, $AllowResize = False, $W
 		$iGui_Count = UBound($iGUI_LIST)
 		ReDim $iGUI_LIST[$iGui_Count + 1][16]
 	EndIf
-	
+
 	$iGUI_LIST[$iGui_Count][0] = $mGUI
 	$iGUI_LIST[$iGui_Count][1] = $AllowDragMove ;Drag
 	$iGUI_LIST[$iGui_Count][2] = $AllowResize ;Resize
-	
+
 	If $AllowResize Then
 		If $Win_MinWidth = "" Then
 			$Win_MinWidth = WinGetPos($mGUI, "")
@@ -222,7 +222,7 @@ Func _Metro_GUIDelete($GUI)
 	GUISetState(@SW_HIDE, $GUI) ;To prevent visible delay when the gui is being deleted
 	_WinAPI_RemoveWindowSubclass($GUI, $m_pDll, 1010)
 	GUIDelete($GUI)
-	
+
 	;Remove from Global GUI List
 	Local $CLEANED_GUI_LIST[0]
 	For $i_HR = 0 To UBound($iGUI_LIST) - 1 Step +1
@@ -311,7 +311,7 @@ Func _Metro_AddControlButtons($CloseBtn = True, $MaximizeBtn = True, $MinimizeBt
 	$ButtonsToCreate_Array[2] = $MinimizeBtn
 	$ButtonsToCreate_Array[3] = $FullScreenBtn
 	$ButtonsToCreate_Array[4] = $MenuBtn
-	
+
 	$GUI_BG_Color = "0xFF" & Hex($GUI_BG_Color, 6)
 	$GUI_Font_Color = "0xFF" & Hex($GUI_Font_Color, 6)
 
@@ -356,12 +356,12 @@ Func _Metro_FullscreenToggle($mGUI)
 		ConsoleWrite("Fullscreen-Toggle failed: GUI is not registered for resizing. Please use _Metro_SetGUIOption to enable resizing." & @CRLF)
 		Return SetError(2) ;
 	EndIf
-	
+
 	Local $mWin_State = WinGetState($mGUI)
 	Local $tRET = _WinAPI_GetWindowPlacement($mGUI)
 	Local $FullScreenPOS = _GetDesktopWorkArea($mGUI, True)
 	Local $CurrentPos = WinGetPos($mGUI)
-	
+
 	Local $MaxBtn = _iGetCtrlHandlebyType("3", $mGUI)
 	Local $RestoreBtn = _iGetCtrlHandlebyType("4", $mGUI)
 	Local $FullScreenBtn = _iGetCtrlHandlebyType("9", $mGUI)
@@ -392,9 +392,9 @@ Func _Metro_FullscreenToggle($mGUI)
 
 		GUICtrlSetState($FullscreenRsBtn, 32)
 		GUICtrlSetState($FullScreenBtn, 16)
-		
+
 	Else ;Not in fullscreen mode -> Enter fullscreen mode
-		
+
 		If (BitAND($mWin_State, 32) = 32) Then ; If window is maximized
 			;Replace array with current window position with the currently saved restore/normal position
 			$CurrentPos[0] = DllStructGetData($tRET, "rcNormalPosition", 1)
@@ -449,7 +449,7 @@ EndFunc   ;==>_Metro_FullscreenToggle
 Func _Metro_AddControlButton_Back($GUI_BG_Color = $GUIThemeColor, $GUI_Font_Color = $FontThemeColor, $tMargin = 2)
 	Local $cbDPI = _HighDPICheck()
 	Local $CurrentGUI = GetCurrentGUI()
-	
+
 	;Set Colors
 	$GUI_BG_Color = "0xFF" & Hex($GUI_BG_Color, 6)
 	$GUI_Font_Color = "0xFF" & Hex($GUI_Font_Color, 6)
@@ -477,7 +477,7 @@ Func _Metro_AddControlButton_Back($GUI_BG_Color = $GUIThemeColor, $GUI_Font_Colo
 	Local $cMarginR = Number($tMargin * $cbDPI, 1)
 
 	;Create GuiPics and set hover states
-	
+
 	$Control_Button_Array[1] = False ; Hover state
 	$Control_Button_Array[2] = False ; Set inactive state
 	$Control_Button_Array[3] = "0" ; Type
@@ -504,7 +504,7 @@ Func _Metro_AddControlButton_Back($GUI_BG_Color = $GUIThemeColor, $GUI_Font_Colo
 
 	_GDIPlus_GraphicsDrawLine($Control_Button_Graphic3[0], $mpX, $mpY, $apos1[0], $apos1[1], $hPen1) ;r
 	_GDIPlus_GraphicsDrawLine($Control_Button_Graphic3[0], $mpX, $mpY, $apos2[0], $apos2[1], $hPen1) ;l
-	
+
 	;Release resources
 	_GDIPlus_PenDispose($hPen)
 	_GDIPlus_PenDispose($hPen1)
@@ -575,7 +575,7 @@ Func _Metro_MenuStart($mGUI, $mWidth, $ButtonsArray, $bFont = "Segoe UI", $bFont
 	Next
 
 	If $mOnEventMode Then Opt("GUIOnEventMode", 0) ;Temporarily deactivate oneventmode
-	
+
 	While 1
 		If Not $blockclose Then
 			If Not WinActive($MenuForm) Then
@@ -680,7 +680,7 @@ Func _Metro_RightClickMenu($mGUI, $mWidth, $ButtonsArray, $bFont = "Segoe UI", $
 	Local $cbDPI = _HighDPICheck()
 	Local $ButtonStep = (25 * $cbDPI)
 	Local $cMarginR = Number(2 * $cbDPI, 1)
-	
+
 	Local $DesktopSize = _GetDesktopWorkArea($mGUI, False)
 	If @error Then Return
 	;Fix position if  it is offscreen
@@ -702,7 +702,7 @@ Func _Metro_RightClickMenu($mGUI, $mWidth, $ButtonsArray, $bFont = "Segoe UI", $
 		$iButtonsArray[$iB] = _iCreateMButton($ButtonsArray[$iB], $cMarginR / 2, $ButtonStep * $iB + ($iB * 2), $mWidth - $cMarginR, $ButtonStep, $GUIThemeColor, $FontThemeColor, $bFont, $bFontSize, $bFontStyle)
 	Next
 	GUISetState(@SW_SHOW, $MenuForm)
-	
+
 	If $mOnEventMode Then Opt("GUIOnEventMode", 0) ;Temporarily disable oneventmode
 
 	While 1
@@ -749,7 +749,7 @@ Func _iCreateControlButtons($ButtonsToCreate_Array, $GUI_BG_Color = $GUIThemeCol
 		Local $hPen4 = _GDIPlus_PenCreate(StringReplace(_AlterBrightness($GUI_Font_Color, -80), "0x", "0xFF"), $FrameSize) ;inactive
 	EndIf
 	Local $hPen5 = _GDIPlus_PenCreate(StringReplace(_AlterBrightness("0xFFFFFF", -80), "0x", "0xFF"), $FrameSize) ;inactive style 2
-	
+
 	If $GUI_BG_Color <> 0 Then
 		$GUI_BG_Color = "0xFF" & Hex($GUI_BG_Color, 6)
 	EndIf
@@ -977,7 +977,7 @@ Func _iCreateControlButtons($ButtonsToCreate_Array, $GUI_BG_Color = $GUIThemeCol
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic2[0], $mpX + $Cutpoint, $mpY + $Cutpoint, $apos2[0], $apos2[1], $hPen) ;v
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic3[0], $mpX - $Cutpoint, $mpY - $Cutpoint, $apos1[0], $apos1[1], $hPen4) ;h
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic3[0], $mpX + $Cutpoint, $mpY + $Cutpoint, $apos2[0], $apos2[1], $hPen4) ;v
-		
+
 		;Calc size+pos arrow2
 		$Cutpoint = ($FrameSize * 0.3)
 		Local $mpX1 = Round($CBw / 2.2, 0), $mpY1 = Round($CBh / 2, 0)
@@ -988,10 +988,10 @@ Func _iCreateControlButtons($ButtonsToCreate_Array, $GUI_BG_Color = $GUIThemeCol
 		;Add arrow2
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic1[0], $mpX1 - $Cutpoint, $mpY1 - $Cutpoint, $apos1[0], $apos1[1], $hPen) ;v
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic1[0], $mpX1 + $Cutpoint, $mpY1 + $Cutpoint, $apos2[0], $apos2[1], $hPen) ;h
-		
+
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic2[0], $mpX1 - $Cutpoint, $mpY1 - $Cutpoint, $apos1[0], $apos1[1], $hPen) ;v
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic2[0], $mpX1 + $Cutpoint, $mpY1 + $Cutpoint, $apos2[0], $apos2[1], $hPen) ;h
-		
+
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic3[0], $mpX1 - $Cutpoint, $mpY1 - $Cutpoint, $apos1[0], $apos1[1], $hPen4) ;v
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic3[0], $mpX1 + $Cutpoint, $mpY1 + $Cutpoint, $apos2[0], $apos2[1], $hPen4) ;h
 
@@ -1002,7 +1002,7 @@ Func _iCreateControlButtons($ButtonsToCreate_Array, $GUI_BG_Color = $GUIThemeCol
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic2[0], $mpX + $Cutpoint, $mpY - $Cutpoint, $apos4[0] - $Cutpoint, $apos4[1] + $Cutpoint, $hPen)
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic3[0], $mpX1 - $Cutpoint, $mpY1 + $Cutpoint, $apos3[0] + $Cutpoint, $apos3[1] - $Cutpoint, $hPen4)
 		_GDIPlus_GraphicsDrawLine($Button_FSRestore_Graphic3[0], $mpX + $Cutpoint, $mpY - $Cutpoint, $apos4[0] - $Cutpoint, $apos4[1] + $Cutpoint, $hPen4)
-		
+
 	EndIf
 	;=============================================================================================================================
 
@@ -1054,7 +1054,7 @@ Func _iCreateControlButtons($ButtonsToCreate_Array, $GUI_BG_Color = $GUIThemeCol
 		$Control_Buttons[1] = $Button_Maximize_Array[0]
 		$Control_Buttons[2] = $Button_Restore_Array[0]
 		GUICtrlSetState($Button_Restore_Array[0], 32)
-		
+
 		_cHvr_Register($Button_Maximize_Array[0], "_iHoverOff", "_iHoverOn", "", "", _iAddHover($Button_Maximize_Array), $CurrentGUI)
 		_cHvr_Register($Button_Restore_Array[0], "_iHoverOff", "_iHoverOn", "", "", _iAddHover($Button_Restore_Array), $CurrentGUI)
 	EndIf
@@ -1180,7 +1180,7 @@ Func _Metro_CreateButton($Text, $Left, $Top, $Width, $Height, $BG_Color = $Butto
 	_GDIPlus_BrushDispose($Brush_BTN_FontColor)
 	_GDIPlus_BrushDispose($Brush_BTN_FontColorDis)
 	_GDIPlus_PenDispose($Pen_BTN_FrameHoverColor)
-	
+
 	;Set graphic and return Bitmap handle
 	$Button_Array[0] = GUICtrlCreatePic("", $Left, $Top, $Width, $Height)
 	$Button_Array[5] = _iGraphicCreateBitmapHandle($Button_Array[0], $Button_Graphic1)
@@ -1286,7 +1286,7 @@ Func _Metro_CreateButtonEx($Text, $Left, $Top, $Width, $Height, $BG_Color = $But
 
 	;Register Hover funcs
 	_cHvr_Register($Button_Array[0], "_iHoverOff", "_iHoverOn", "", "", _iAddHover($Button_Array))
-	
+
 	Return $Button_Array[0]
 
 EndFunc   ;==>_Metro_CreateButtonEx
@@ -1330,7 +1330,7 @@ Func _Metro_CreateButtonEx2($Text, $Left, $Top, $Width, $Height, $BG_Color = $Bu
 	$Button_Array[1] = False ; Set hover OFF
 	$Button_Array[3] = "2" ; Type
 	$Button_Array[15] = GetCurrentGUI()
-	
+
 	If StringInStr($GUI_Theme_Name, "Light") Then
 		Local $Font_Color1 = _AlterBrightness($Font_Color, 7)
 	Else
@@ -1341,7 +1341,7 @@ Func _Metro_CreateButtonEx2($Text, $Left, $Top, $Width, $Height, $BG_Color = $Bu
 	$Font_Color = "0xFF" & Hex($Font_Color, 6)
 	$Font_Color1 = "0xFF" & Hex($Font_Color1, 6)
 	$FrameColor = "0xFF" & Hex($FrameColor, 6)
-	
+
 	Local $Brush_BTN_FontColor = _GDIPlus_BrushCreateSolid($Font_Color)
 	Local $Brush_BTN_FontColor1 = _GDIPlus_BrushCreateSolid($Font_Color1)
 	Local $Brush_BTN_FontColorDis = _GDIPlus_BrushCreateSolid(StringReplace(_AlterBrightness($Font_Color, -30), "0x", "0xFF"))
@@ -1819,7 +1819,7 @@ Func _Metro_CreateToggleEX($Text, $Left, $Top, $Width, $Height, $BG_Color = $GUI
 	Local $tLayout = _GDIPlus_RectFCreate($hFWidth, 0, $Width - $hFWidth, $Height)
 	_GDIPlus_StringFormatSetAlign($hFormat, 1)
 	_GDIPlus_StringFormatSetLineAlign($hFormat, 1)
-	
+
 	;Draw text
 	If StringInStr($Text, "|@|") Then
 		$Text1 = StringRegExp($Text, "\|@\|(.+)", 1)
@@ -2117,7 +2117,7 @@ Func _Metro_CreateRadio($RadioGroup, $Text, $Left, $Top, $Width, $Height, $BG_Co
 
 	;Set Colors
 	If $BG_Color <> 0 Then $BG_Color = "0xFF" & Hex($BG_Color, 6)
-	
+
 	$Font_Color = "0xFF" & Hex($Font_Color, 6)
 	Local $Brush_BTN_FontColor = _GDIPlus_BrushCreateSolid($Font_Color)
 	Local $BoxFrameCol = StringReplace($CB_Radio_Hover_Color, "0x", "0xFF")
@@ -2327,8 +2327,8 @@ Func _Metro_CreateCheckbox($Text, $Left, $Top, $Width, $Height, $BG_Color = $GUI
 		$BG_Color = "0xFF" & Hex($BG_Color, 6)
 	EndIf
 	$Font_Color = "0xFF" & Hex($Font_Color, 6)
-	
-	
+
+
 	Local $Brush_BTN_FontColor = _GDIPlus_BrushCreateSolid($Font_Color)
 	If $cb_style = 0 Then
 		Local $Brush1 = _GDIPlus_BrushCreateSolid(StringReplace($CB_Radio_Color, "0x", "0xFF")) ;default
@@ -2491,29 +2491,29 @@ Func _Metro_CreateCheckboxEx2($Text, $Left, $Top, $Width, $Height, $BG_Color = $
 		$BG_Color = "0xFF" & Hex($BG_Color, 6)
 	EndIf
 	$Font_Color = "0xFF" & Hex($Font_Color, 6)
-	
+
 
 	Local $Brush_BTN_FontColor = _GDIPlus_BrushCreateSolid($Font_Color)
-	
+
 	If StringInStr($GUI_Theme_Name, "Light") Then
 		Local $Pen1 = _GDIPlus_PenCreate(StringReplace(_AlterBrightness($GUIThemeColor, -100), "0x", "0xFF"), $FrameSize)
 	Else
 		Local $Pen1 = _GDIPlus_PenCreate(StringReplace(_AlterBrightness($GUIThemeColor, +85), "0x", "0xFF"), $FrameSize)
 	EndIf
-	
-	
+
+
 	Local $Pen2 = _GDIPlus_PenCreate(StringReplace($Font_Color, "0x", "0xFF"), $FrameSize) ;checked
 	Local $Brush3 = _GDIPlus_BrushCreateSolid(StringReplace($ButtonBKColor, "0x", "0xFF")) ;checked
 	Local $Brush4 = _GDIPlus_BrushCreateSolid(StringReplace(_AlterBrightness($ButtonBKColor, +10), "0x", "0xFF")) ;checked hover
 	Local $PenX = _GDIPlus_PenCreate(StringReplace($CB_Radio_Color, "0x", "0xFF"), $FrameSize) ;CheckmarkColor
-	
+
 
 	;Create graphics
 	Local $Checkbox_Graphic1 = _iGraphicCreate($Width, $Height, $BG_Color, 5, 5) ;default state
 	Local $Checkbox_Graphic2 = _iGraphicCreate($Width, $Height, $BG_Color, 5, 5) ;checked state
 	Local $Checkbox_Graphic3 = _iGraphicCreate($Width, $Height, $BG_Color, 5, 5) ;default hover state
 	Local $Checkbox_Graphic4 = _iGraphicCreate($Width, $Height, $BG_Color, 5, 5) ;checked hover state
-	
+
 	;Create font, Set font options
 	Local $hFormat = _GDIPlus_StringFormatCreate(), $hFamily = _GDIPlus_FontFamilyCreate($Font), $hFont = _GDIPlus_FontCreate($hFamily, $Fontsize, $FontStyle)
 	Local $tLayout = _GDIPlus_RectFCreate($CheckBox_Text_Margin, 0, $Width - $CheckBox_Text_Margin, $Height)
@@ -2547,7 +2547,7 @@ Func _Metro_CreateCheckboxEx2($Text, $Left, $Top, $Width, $Height, $BG_Color = $
 	_GDIPlus_GraphicsDrawLine($Checkbox_Graphic2[0], $mpX, $mpY - $Cutpoint, $apos2[0], $apos2[1], $PenX) ;l
 	_GDIPlus_GraphicsDrawLine($Checkbox_Graphic4[0], $mpX - $Cutpoint, $mpY, $apos1[0], $apos1[1], $PenX)
 	_GDIPlus_GraphicsDrawLine($Checkbox_Graphic4[0], $mpX, $mpY - $Cutpoint, $apos2[0], $apos2[1], $PenX)
-	
+
 	_GDIPlus_GraphicsDrawLine($Checkbox_Graphic1[0], $mpX - $Cutpoint, $mpY, $apos1[0], $apos1[1], $Pen1) ;r
 	_GDIPlus_GraphicsDrawLine($Checkbox_Graphic1[0], $mpX, $mpY - $Cutpoint, $apos2[0], $apos2[1], $Pen1) ;l
 	_GDIPlus_GraphicsDrawLine($Checkbox_Graphic3[0], $mpX - $Cutpoint, $mpY, $apos1[0], $apos1[1], $Pen2)
@@ -2748,7 +2748,7 @@ Func _Metro_MsgBox($Flag, $Title, $Text, $mWidth = 600, $Fontsize = 11, $ParentG
 	If $Buttons_Count < 2 Then GUICtrlSetState($2ndButton, 32)
 	Local $3rdButton = _Metro_CreateButton($3rdButtonText, $3rdButton_Left, ($mHeight / $msgbDPI) - 50, 100, 34, $ButtonBKColor, $ButtonTextColor)
 	If $Buttons_Count < 3 Then GUICtrlSetState($3rdButton, 32)
-	
+
 	;Set default btn.
 	Switch $Flag
 		Case 0, 1, 5
@@ -2761,16 +2761,16 @@ Func _Metro_MsgBox($Flag, $Title, $Text, $mWidth = 600, $Fontsize = 11, $ParentG
 			GUICtrlSetState($1stButton, 512)
 	EndSwitch
 	GUISetAccelerators($aAccelKeys, $MsgBox_Form)
-	
+
 	GUISetState(@SW_SHOW)
 
 	If $Timeout <> 0 Then
 		$iMsgBoxTimeout = $Timeout
 		AdlibRegister("_iMsgBoxTimeout", 1000)
 	EndIf
-	
+
 	If $mOnEventMode Then Opt("GUIOnEventMode", 0) ;Temporarily deactivate oneventmode
-	
+
 	While 1
 		If $Timeout <> 0 Then
 			If $iMsgBoxTimeout <= 0 Then
@@ -3163,7 +3163,7 @@ EndFunc   ;==>limitCol
 Func _CreateBorder($mGUI, $guiW, $guiH, $bordercolor = 0xFFFFFF)
 	Local $cLeft, $cRight, $cTop, $cBottom
 	Local $gID = _iGetGUIID($mGUI)
-	
+
 	$cTop = GUICtrlCreateLabel("", 0, 0, $guiW, 1)
 	GUICtrlSetColor(-1, $bordercolor)
 	GUICtrlSetBkColor(-1, $bordercolor)
@@ -3190,7 +3190,7 @@ Func _CreateBorder($mGUI, $guiW, $guiH, $bordercolor = 0xFFFFFF)
 		$iGUI_LIST[$gID][14] = $cLeft
 		$iGUI_LIST[$gID][15] = $cRight
 	EndIf
-	
+
 EndFunc   ;==>_CreateBorder
 
 Func _WinPos($ParentWin, $Win_Wi, $Win_Hi)
@@ -3444,7 +3444,7 @@ Func _iEffectControl($hWnd, $imsg, $wParam, $lParam, $iID, $gID)
 				EndIf
 			EndIf
 	EndSwitch
-	
+
 	Return DllCall("comctl32.dll", "lresult", "DefSubclassProc", "hwnd", $hWnd, "uint", $imsg, "wparam", $wParam, "lparam", $lParam)[0]
 EndFunc   ;==>_iEffectControl
 
