@@ -685,25 +685,3 @@ Func CheckInputSearch ()
  Next
  EndFunc
 
- Func WM_COMMANDINPUTSEARCH($hWnd, $iMsg, $wParam, $lParam)
-
-    Local $hdlWindowFrom, _
-          $intMessageCode, _
-          $intControlID_From
-
-    $intControlID_From =  BitAND($wParam, 0xFFFF)
-    $intMessageCode = BitShift($wParam, 16)
-
-    Switch $intControlID_From
-        Case $input_search
-            Switch $intMessageCode
-			Case $EN_CHANGE
-			   $same = 1
-                    ;ConsoleWrite("[" & _Now() & "] - The text in the $txtInput control has changed! Text = " & GUICtrlRead($inputsearch) & @CRLF)
-            EndSwitch
-    EndSwitch
-
-    Return $GUI_RUNDEFMSG
-
-EndFunc
-
