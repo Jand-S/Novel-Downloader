@@ -1,4 +1,4 @@
-# Novel-Downloader (v0.4)
+# Novel-Downloader (v0.2)
 <hr>
 <h1>Features</h1>
 <ul>
