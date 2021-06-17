@@ -35,8 +35,7 @@
 <li>https://drive.google.com/file/d/15e6uHvOY2O5_cE_jGNvyruTe1oHsPVva/view</li>
 
 <h3>Credits</h3>
-MetroGUI UDF - Author(s): BB_19
-AutoIt BinaryCall UDF - Author(s): Ward
-ListView_Progress Function - Author(s): R.Gilman (a.k.a rasim), arcker
-WKHTML2X (PDF/IMG) - Author(s): Jefrey
-
+<p>MetroGUI UDF - Author(s): BB_19</p>
+<p>AutoIt BinaryCall UDF - Author(s): Ward</p>
+<p>ListView_Progress Function - Author(s): R.Gilman (a.k.a rasim), arcker</p>
+<p>WKHTML2X (PDF/IMG) - Author(s): Jefrey</p>
