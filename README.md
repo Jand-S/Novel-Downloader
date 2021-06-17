@@ -22,6 +22,8 @@
 <img src="example/01.png" alt="">
 <p>02 - Click Open and wait.</p>
 <img src="example/02.png" alt="">
+<p>03 - Hold Shift to select multiple chapters..</p>
+<img src="example/03.png" alt="">
 
 <h3>Suported sites</h3>
 <ul>
