@@ -18,7 +18,7 @@
 </ul>
 <h1>Usage</h1>
 <p>Place the link of the novel you want to download, hold shift and select the chapters, then press the download button.</p>
-<img src="example/img/01.png" alt="W3Schools.com">
+<img src="example/01.png" alt="">
 <h3>Suported sites</h3>
 <ul>
 <li><a href= "https://novelmania.com.br/">novelmania.com.br</a></li>
